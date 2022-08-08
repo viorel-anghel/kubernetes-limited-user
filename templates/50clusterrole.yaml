@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: "true"
+  name: test-read-only
+  namespace: NAMESPACE
+rules:
+- apiGroups:
+  - ""
+  resources: ["namespaces","nodes","persistentvolumes","componentstatuses","storageclasses","ingressclasses"]
+  verbs:
+  - get
+  - list
+  - watch
+

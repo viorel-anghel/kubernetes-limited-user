@@ -1,0 +1,24 @@
+iapiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: CERT
+    server: SERVER
+  name: SERVER_NAME
+
+contexts:
+- context:
+    cluster: SERVER_NAME
+    namespace: NAMESPACE
+    user: USER
+  name: NAMESPACE
+
+current-context: NAMESPACE
+kind: Config
+preferences: {}
+
+users:
+- name: USER
+  user:
+    token: TOKEN
+    client-key-data: CERT
+
