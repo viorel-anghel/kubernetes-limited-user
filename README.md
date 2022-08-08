@@ -10,3 +10,8 @@ $ kubectl -n kube-system get pods
 Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:dev:dev-user" cannot list resource "pods" in API group "" in the namespace "kube-system"
 ```
 
+## ref
+i've got some things from
+- https://computingforgeeks.com/restrict-kubernetes-service-account-users-to-a-namespace-with-rbac/
+- https://medium.com/@rschoening/read-only-access-to-kubernetes-cluster-fcf84670b698
+
