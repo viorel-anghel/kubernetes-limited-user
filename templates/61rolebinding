@@ -1,14 +1,14 @@
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: admin-view
+  name: USER-rbinding
   namespace: NAMESPACE
 subjects:
 - kind: ServiceAccount
   name: USER
-  namespace: NAMESPACE
+  namespace: default
 roleRef:
+  kind: ClusterRole
+  name: USER-crole1
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: admin
 

@@ -1,25 +1,43 @@
 
+# define one or more namespaces
+NAMESPACES='estimex-dev estimex-prod dev prod'
+
+USER='dev-user'
 SERVER_NAME=iship
 SERVER='https://192.168.94.11:6443'
-NAMESPACE='dev'
-USER='dev-user'
 
-for f in templates/*.yaml
+for n in $NAMESPACES
 do
-  sed -e "s|SERVER|$SERVER|" \
-      -e "s/SERVER_NAME/$SERVER_NAME/" \
-      -e "s/NAMESPACE/$NAMESPACE/" \
+    sed -e "s/NAMESPACE/$n/" templates/10ns >10ns-${n}.yaml
+    kubectl apply -f 10ns-${n}.yaml
+done
+
+sed -e "s/USER/$USER/" templates/20sa >20sa.yaml
+kubectl apply -f 20sa.yaml
+
+sed -e "s/USER/$USER/" templates/40crole1 >40crole1.yaml
+kubectl apply -f 40crole1.yaml
+
+sed -e "s/USER/$USER/" templates/41crole2 >41crole2.yaml
+kubectl apply -f 41crole2.yaml
+
+sed -e "s/USER/$USER/" templates/60clusterrolebinding >60clusterrolebinding.yaml
+kubectl apply -f 60clusterrolebinding.yaml
+
+for n in $NAMESPACES
+do
+  sed -e "s/NAMESPACE/$n/" \
       -e "s/USER/$USER/" \
-  $f >$(basename $f)
+   templates/61rolebinding >61rolebinding-${n}.yaml
+  kubectl apply -f 61rolebinding-${n}.yaml
 done
 
-for f in *.yaml
-do	
-  kubectl apply -f $f
-done
+secret_name=$(kubectl -n default get secret | (grep ${USER} || echo "$_") | awk '{print $1}')
 
-TOKEN=$( kubectl -n ${NAMESPACE} describe secret $(kubectl -n ${NAMESPACE} get secret | (grep ${USER} || echo "$_") | awk '{print $1}') | grep token: | awk '{print $2}'\n  )
-CERT=$( kubectl -n ${NAMESPACE} get secret `kubectl -n ${NAMESPACE} get secret | (grep ${USER} || echo "$_") | awk '{print $1}'` -o "jsonpath={.data['ca\.crt']}" )
+TOKEN=$( kubectl -n default describe secret $secret_name | grep token: | awk '{print $2}'\n  )
+TOKEN2=$( kubectl -n default get secret $secret_name  -o "jsonpath={.data['token']}" )
+
+CERT=$( kubectl -n default get secret $secret_name -o "jsonpath={.data['ca\.crt']}" )
 
 sed -e "s/SERVER_NAME/$SERVER_NAME/" \
     -e "s|SERVER|$SERVER|" \
@@ -31,5 +49,6 @@ sed -e "s/SERVER_NAME/$SERVER_NAME/" \
 
 echo "now try"
 echo "export KUBECONFIG=config-${SERVER_NAME}-${USER}"
+echo "you will have access to namespaces $NAMESPACES"
 
 
