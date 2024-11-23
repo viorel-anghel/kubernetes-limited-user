@@ -7,7 +7,7 @@ metadata:
 rules:
 - apiGroups:
   - ""
-  resources: ["namespaces","nodes","persistentvolumes","componentstatuses","storageclasses","ingressclasses"]
+  resources: ["namespaces","nodes","persistentvolumes","componentstatuses","storageclasses","ingressclasses","crds", "runtimeclasses","priorityclasses"]
   verbs:
   - get
   - list
